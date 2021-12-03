@@ -1,4 +1,4 @@
-library IEEE;library IEEE;
+library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.numeric_std.all;
 use ieee.std_logic_arith.all;
@@ -45,13 +45,14 @@ begin
     -- Автоподогрев воды в бойлере
 	process(clk)
 	begin
-		if rising_edge(clk) then
-            if (water_temp_over_90C = '1') then
-                water_heater_on <= '0';
-            else
+	if rising_edge(clk) then
+
+            if (water_temp_over_90C = '0')and(state = POURING_WAIT) then
                 water_heater_on <= '1';
+            else
+                water_heater_on <= '0';
             end if;
-		end if;
+	end if;
 	end process;
 
 
@@ -157,3 +158,4 @@ begin
       end case;
    end process;
 end Behavioral;
+
