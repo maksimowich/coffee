@@ -2,8 +2,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity sim_tb is
-   generic (CLOCK_RATE     : integer :=1;         -- clock rate
-            CLOCK_UNIT     : integer :=1000);   -- clock rate unit GHz
 
 end sim_tb;
 
