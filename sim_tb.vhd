@@ -47,8 +47,8 @@ component tester is
 end component;
 
 
-signal clk		: std_logic := '1';
-signal reset	: std_logic:= '1';
+signal clk		: std_logic := '0';
+signal reset	: std_logic:= '0';
 	
 signal button_START_pressed		: std_logic := '0';
 signal button_UP_pressed	: std_logic:= '0';
