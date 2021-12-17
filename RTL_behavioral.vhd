@@ -41,8 +41,8 @@ begin
 
     led_grind_time  <= grind_time(11 downto 8);
     led_bigcup  <= big_cup_selected;   
-            
-    -- Àâòîïîäîãðåâ âîäû â áîéëåðå
+        
+--автоподогрев воды в бойлере
 	process(clk)
 	begin
 	if rising_edge(clk) then
