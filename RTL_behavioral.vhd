@@ -14,13 +14,13 @@ entity RTL_behavioral is
            button_DOWN_pressed : in STD_LOGIC;
            button_BIGCUP_pressed : in STD_LOGIC;
            
-           water_heater_on : out STD_LOGIC;
+           water_heater_on : out STD_LOGIC :=  '0';
            water_temp_over_90C : in STD_LOGIC;
            
-           led_grind_time : out STD_LOGIC_VECTOR (3 downto 0); 
-           led_bigcup : out STD_LOGIC;          
-           grinder_on : out STD_LOGIC;           
-           water_on : out STD_LOGIC);
+           led_grind_time : out STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
+           led_bigcup : out STD_LOGIC :=  '0';         
+           grinder_on : out STD_LOGIC :=  '0';          
+           water_on : out STD_LOGIC :=  '0');
 end RTL_behavioral;
 
 architecture Behavioral of RTL_behavioral is
@@ -42,7 +42,7 @@ begin
     led_grind_time  <= grind_time(11 downto 8);
     led_bigcup  <= big_cup_selected;   
             
-    -- Автоподогрев воды в бойлере
+    -- Àâòîïîäîãðåâ âîäû â áîéëåðå
 	process(clk)
 	begin
 	if rising_edge(clk) then
@@ -158,4 +158,3 @@ begin
       end case;
    end process;
 end Behavioral;
-
