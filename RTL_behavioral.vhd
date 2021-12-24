@@ -65,113 +65,106 @@ begin
 	elsif rising_edge(clk) then
 	
 	case (state) is
-					
-						when IDLE =>
-							delay_counter <= X"000";
-							if button_UP_pressed = '1' then
-								state <= GRINDING_TIME_UP;
-							elsif button_DOWN_pressed = '1' then
-								state <= GRINDING_TIME_DOWN;
-							elsif button_BIGCUP_pressed = '1' then
-								state <= CUPSELECT;
-							elsif button_START_pressed = '1' then
-								pour_water_time(11) <= big_cup_selected;
-								if water_level_ok = '1' then
-									state <= TEST_PUMP;
-								else
-									state <= WATER_LEVEL_ERROR;
-								end if;
-							end if;            
-							
-						when GRINDING_TIME_UP =>
-							state <= WAIT_DELAY;
 
-						when GRINDING_TIME_DOWN =>
-							state <= WAIT_DELAY;
-			 
-						 when CUPSELECT =>
-							state <= WAIT_DELAY;
-							
-						 when WAIT_DELAY =>
-							if delay_counter = X"0FF" then 
-								delay_counter <= X"000";
-								state <= IDLE;
-							else
-								delay_counter <= delay_counter + 1;
-							end if; 
+            when IDLE =>
+                delay_counter <= X"000";
+                if button_UP_pressed = '1' then
+                    state <= GRINDING_TIME_UP;
+                elsif button_DOWN_pressed = '1' then
+                    state <= GRINDING_TIME_DOWN;
+                elsif button_BIGCUP_pressed = '1' then
+                    state <= CUPSELECT;
+                elsif button_START_pressed = '1' then
+                    pour_water_time(11) <= big_cup_selected;
+                    if water_level_ok = '1' then
+                        state <= TEST_PUMP;
+                    else
+                        state <= WATER_LEVEL_ERROR;
+                    end if;
+                end if;            
+                
+            when GRINDING_TIME_UP =>
+                state <= WAIT_DELAY;
 
+            when GRINDING_TIME_DOWN =>
+                state <= WAIT_DELAY;
+ 
+            when CUPSELECT =>
+                state <= WAIT_DELAY;
+                
+            when WAIT_DELAY =>
+                if delay_counter = X"0FF" then 
+                    delay_counter <= X"000";
+                    state <= IDLE;
+                else
+                    delay_counter <= delay_counter + 1;
+                end if; 
 
+            when TEST_PUMP =>
+                if(pressure = '1') then
+                    delay_counter <= X"000";
+                    state <= TEST_HEATER;
+                elsif delay_counter = X"0FF" then 
+                    state <= PUMP_ERROR;
+                else
+                    delay_counter <= delay_counter + 1;
+                end if; 
+                
+            when TEST_HEATER =>
+                if(water_temp_over_90C = '1') then
+                    delay_counter <= X"000";
+                    state <= GRINDING;
+                elsif delay_counter = X"0FF" then 
+                    state <= HEATER_ERROR;
+                else
+                    delay_counter <= delay_counter + 1;
+                end if;							
+                
+            when GRINDING =>
+                if delay_counter = grind_time then
+                    delay_counter <= X"000";
+                    state <= PREHEAT;
+                else
+                    delay_counter <= delay_counter + 1;									
+                end if; 
+                
+            when PREHEAT =>
+                if(water_temp_over_90C = '1') then
+                    delay_counter <= X"000";
+                    state <= POURING;
+                elsif delay_counter = X"0FF" then 
+                    state <= HEATER_ERROR;
+                else
+                    delay_counter <= delay_counter + 1;
+                end if;							
+                              
+            when POURING =>
+                if delay_counter = pour_water_time then 
+                    delay_counter <= X"000";
+                    state <= CLEANING;
+                else
+                    delay_counter <= delay_counter + 1;									
+                end if; 
 
-						 when TEST_PUMP =>
-							if(pressure = '1') then
-								delay_counter <= X"000";
-								state <= TEST_HEATER;
-							elsif delay_counter = X"0FF" then 
-								state <= PUMP_ERROR;
-							else
-								delay_counter <= delay_counter + 1;
-							end if; 
-							
-						 when TEST_HEATER =>
-							if(water_temp_over_90C = '1') then
-								delay_counter <= X"000";
-								state <= GRINDING;
-							elsif delay_counter = X"0FF" then 
-								state <= HEATER_ERROR;
-							else
-								delay_counter <= delay_counter + 1;
-							end if;							
-							
-							
-							
-								
-						 when GRINDING =>
-							if delay_counter = grind_time then
-								delay_counter <= X"000";
-								state <= PREHEAT;
-							else
-								delay_counter <= delay_counter + 1;									
-							end if; 
-							
-						 when PREHEAT =>
-							if(water_temp_over_90C = '1') then
-								delay_counter <= X"000";
-								state <= POURING;
-							elsif delay_counter = X"0FF" then 
-								state <= HEATER_ERROR;
-							else
-								delay_counter <= delay_counter + 1;
-							end if;							
-										  
-						 when POURING =>
-							if delay_counter = pour_water_time then 
-								delay_counter <= X"000";
-								state <= CLEANING;
-							else
-								delay_counter <= delay_counter + 1;									
-							end if; 
+            when CLEANING =>
+                if delay_counter = clean_time then
+                    delay_counter <= X"000";
+                    state <= IDLE;
+                else
+                    delay_counter <= delay_counter + 1;									
+                end if;
 
-						
-						 when CLEANING =>
-							if delay_counter = clean_time then
-								delay_counter <= X"000";
-								state <= IDLE;
-							else
-								delay_counter <= delay_counter + 1;									
-							end if;
-
-						when WATER_LEVEL_ERROR =>
-				
-						when PUMP_ERROR =>
-							
-						when HEATER_ERROR =>
-						
-						when others =>
-							state <= IDLE;
-					end case;	
+            when WATER_LEVEL_ERROR =>
+    
+            when PUMP_ERROR =>
+                
+            when HEATER_ERROR =>
+            
+            when others =>
+                state <= IDLE;
+        end case;	
 	end if;
 end process;
-	
 	
 	
 OUTPUT_DECODE: process (clk)
@@ -209,13 +202,11 @@ begin
 				drain_valve   <= '0';     
 			end if;
 
-
 			if (state = TEST_PUMP)or(state = TEST_HEATER) or(state = PREHEAT) then
 				return_valve   <= '1';
 			else
 				return_valve   <= '0';     
 			end if;
-			
 
 			if ((state = POURING)or(state = TEST_HEATER)or(state = CLEANING) or(state = PREHEAT)) then
 				 heater <= '1';
@@ -252,8 +243,6 @@ begin
 			else
 				led_alarm_level   <= '0';     
 			end if;			
-			
-			
 	end if;	
 end process;	
 	
