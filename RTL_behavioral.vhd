@@ -14,11 +14,10 @@ entity RTL_behavioral is
            button_DOWN_pressed : in STD_LOGIC :=  '0';
            button_BIGCUP_pressed : in STD_LOGIC :=  '0';
 
-			  water_level_ok : in STD_LOGIC :=  '0';           
+	   water_level_ok : in STD_LOGIC :=  '0';           
            water_temp_over_90C : in STD_LOGIC :=  '0';
-			  pressure : in STD_LOGIC :=  '0';
+	   pressure : in STD_LOGIC :=  '0';
 			  
-           
            led_grind_time : out STD_LOGIC_VECTOR (3 downto 0) := (others => '0');
            led_cup_200ml : out STD_LOGIC :=  '0'; 
            led_cup_100ml : out STD_LOGIC :=  '0'; 			  
@@ -27,14 +26,13 @@ entity RTL_behavioral is
            led_alarm_pump : out STD_LOGIC :=  '0'; 
            led_alarm_heater : out STD_LOGIC :=  '0';
  			  
-
            heater : out STD_LOGIC :=  '0';
-			  pump : out STD_LOGIC :=  '0';
+	   pump : out STD_LOGIC :=  '0';
            grinder_on : out STD_LOGIC :=  '0';          
            water_valve : out STD_LOGIC :=  '0';
-			  return_valve : out STD_LOGIC :=  '0';
-			  cup_valve : out STD_LOGIC :=  '0';
-			  drain_valve : out STD_LOGIC :=  '0');
+	   return_valve : out STD_LOGIC :=  '0';
+	   cup_valve : out STD_LOGIC :=  '0';
+	   drain_valve : out STD_LOGIC :=  '0');
 end RTL_behavioral;
 
 architecture Behavioral of RTL_behavioral is
@@ -51,7 +49,6 @@ signal big_cup_selected		: std_logic :=  '0';
 type state_type is (IDLE, GRINDING_TIME_UP,GRINDING_TIME_DOWN,CUPSELECT,WAIT_DELAY, TEST_PUMP, TEST_HEATER, GRINDING, PREHEAT,POURING, CLEANING, WATER_LEVEL_ERROR, PUMP_ERROR, HEATER_ERROR);
 signal state: state_type := IDLE;
 		
-	
 begin
 
     led_grind_time  <= grind_time(11 downto 8);
@@ -67,8 +64,7 @@ begin
 			state <= IDLE;
 	elsif rising_edge(clk) then
 	
-	
-					case (state) is
+	case (state) is
 					
 						when IDLE =>
 							delay_counter <= X"000";
@@ -146,10 +142,6 @@ begin
 							else
 								delay_counter <= delay_counter + 1;
 							end if;							
-							
-							
-							
-							
 										  
 						 when POURING =>
 							if delay_counter = pour_water_time then 
@@ -176,8 +168,7 @@ begin
 						
 						when others =>
 							state <= IDLE;
-					end case;
-					
+					end case;	
 	end if;
 end process;
 	
